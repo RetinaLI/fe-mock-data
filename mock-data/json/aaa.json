@@ -1,0 +1,21 @@
+{
+	"info": "success",
+	"data": [
+		{
+			"id": 1,
+			"name": "hello"
+		},
+		{
+			"id": 2,
+			"name": "hi"
+		},
+		{
+			"id": 3,
+			"name": "morning"
+		},
+		{
+			"id": 4,
+			"name": "how are you"
+		}
+	]
+}

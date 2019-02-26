@@ -1,0 +1,22 @@
+{
+  "name": "fe-mock-data",
+  "version": "1.2.78",
+  "description": "模拟后台数据",
+  "main": "index.js",
+  "scripts": {},
+  "bin": {
+    "fe-mock-data": "index.js"
+  },
+  "author": "liwenming",
+  "license": "ISC",
+  "keywords": [
+    "fe-mock-data",
+    "mock-server"
+  ],
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "commander": "^2.19.0",
+    "express": "^4.16.4",
+    "express-ws": "^4.0.0"
+  }
+}
