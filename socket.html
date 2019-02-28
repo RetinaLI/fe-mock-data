@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+     <input type="text" id="text">
+     <button onclick ="send()">发送消息</button>
+     <button onclick ="closeWebsocket()">关闭连接</button>
+     <div id="message"></div>
+  <script>
+
+    // function WebSocketTest() {
+
+      // 首先判断是否 支持 WebSocket
+        ws = new WebSocket("ws://localhost:4200/ws/hi");
+
+        // var ws = new Websocket("ws://localhost:4200/ws/hi");
+        ws.onopen = function() {
+          setMessageInnerHTML("WebSocket连接成功");
+        };
+
+        ws.onmessage = function (event) {
+          setMessageInnerHTML(event.data);
+        };
+
+        ws.onerror = (err) => {
+          setMessageInnerHTML("WebSocket连接发生错误");
+        };
+        ws.onclose = function(){
+          setMessageInnerHTML("WebSocket连接关闭");
+        };
+
+    // }
+
+    // window.onbeforeunload = function () {
+    //   closeWebSocket();
+    // }
+
+    function setMessageInnerHTML(innerHTML) {
+        document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    }
+
+    function closeWebSocket() {
+        ws.close();
+    }
+
+    function send() {
+        var message = document.getElementById('text').value;
+        console.log(message);
+        ws.send(message);
+    }
+
+  </script>
+
+</body>
+</html>

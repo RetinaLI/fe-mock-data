@@ -9,7 +9,9 @@
     在开始之前，假设你已经安装了 Node.js(v8.x及以上)。
 ### 安装
   + 全局安装 npm i fe-mock-data -g
-
+### 特点
+  + 简洁、高效
+  + 兼容websocket
 #### 初始化
     fe-mock-data init
     默认在根目录（package.json同级）生成mock-data文件夹，里面有json文件夹和config.js文件。
@@ -61,7 +63,7 @@
     如果有定制需求，则可参考以下设置
 ```
     module.exports = {
-      publicPath: 'mock-data/public',  //静态文件路径
+      publicPath: 'mock-data/public',  //静态文件路径（有需要可对此项进行设置）
       routes： {
         getHiData1: { //如仅需要返回一张图片，不需要返回json数据,省略json配置项
           url: '/hi',
@@ -81,14 +83,30 @@
       }
     }
 ```
+
+  如需用到websocket,参考一下配置
+```
+  getWsData: {
+    url: 'ws://{{prefix}}/ws/hi', //配置websocket路径，只需更改'{{prefix}}'后面路径。前台写法是： 'ws://localhost:4200/ws/hi'.
+    method: 'ws',  // 此项表示是websocket模拟，必填
+    interval: 3000,  // 后台返回数据间隔（毫秒值），如不配置值返回一次
+    json: 'mock-data/json/aaa.json'
+    // renderFn: function(dataRes, ws, req, ext) { // 自定义项
+    //   console.log(dataRes);
+    // }
+  }
+```
+
+
 注解：
   + publicPath 表示静态文件路径，调用时可用localhost:4200/public/xx.png写法；
-  + renderFn方法，当配置了json项，则第一个参数为dataRes,返回json数据，如果没有json配置项，则第一个参数为null; req、res为express的req、res;ext上面有path、fs、__dirname三个nodejs方法，getPageData基础分页方法。参数为(arr, pageIndex, pageSize, startIndex);
-
+  + 非websocket配置中的renderFn方法，当配置了json项，则第一个参数为dataRes,返回json数据，如果没有json配置项，则第一个参数为null; req、res为express的req、res;ext上面有path、fs、__dirname三个nodejs方法，getPageData基础分页方法。参数为(arr, pageIndex, pageSize, startIndex);
+  + websocket配置中的renderFn方法，当配置了json项，则第一个参数为dataRes,返回json数据，如果没有json配置项，则第一个参数为null; ws、req为express的ws、req;ext同上。
 
 #### 注意事项
-  - 在vue+webpack项目中（vue2.*版本），如果配置文件(config.js)中有用到ES6的语法，则需要注意.babelrc中的plugins设置，"transform-runtime" 和 "transform-es2015-modules-commonjs"必须同时使用，或者两者都不用。
-  - 若返回json数据中有图片链接，则可以将图片放进mock-data/images路径下，使用的则写localhost:4200/images/xx.png;
+  - 1、由于在config.js中使用了es6的module.exports 写法，因此在引入时最好使用 import * as xxx from '../mock-data/config.js';类似写法。
+  - 2、在vue+webpack项目中（vue2.*版本），在打包过程中，如果没有使用1中所述方式，可能会报错。则需要注意.babelrc中的plugins设置，"transform-runtime" 和 "transform-es2015-modules-commonjs"要同时使用，或者两者都不用。
 
 ### 更多命令
     fe-mock-data -h
+    fe-mock-data -V

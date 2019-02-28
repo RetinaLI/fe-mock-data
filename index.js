@@ -12,7 +12,6 @@ let packageInfo = require('./package.json');
 let expressWs = require('express-ws')(app);
 app = expressWs.app;
 
-
 let ext = {
   path: path,
   fs: fs,
@@ -77,17 +76,31 @@ program
       let callbackStatus = routesMap[key].callbackStatus || 200;
       let dataRes;
       // 以websocket为分界
-      if (method === 'ws' && routesMap[key].json) {
+      if (method === 'ws') {
         let wsUrl = route.split("{{prefix}}")[1];
         router.ws(wsUrl, (ws, req) => {
-          dataRes = fs.readFileSync(path.join(path.resolve('.'), serverConfig[key].json));
-          // dataRes = JSON.stringify(JSON.parse(dataRes));
-          dataRes = JSON.parse(dataRes);
-          ws.send(dataRes);
-          ws.on('message', (msg) => {
-            console.log(msg);
-            ws.send(msg);
-          });
+          if (routesMap[key].json && routesMap[key].renderFn) {
+            dataRes = getJsonNoPage(routesMap[key].json);
+            routesMap[key].renderFn(dataRes, ws, req, ext);
+
+          } else if (routesMap[key].renderFn) {
+            routesMap[key].renderFn(null, ws, req, ext);
+
+          } else if (routesMap[key].json) {
+            dataRes = getJsonNoPage(routesMap[key].json);
+            dataRes = JSON.stringify(dataRes);
+            if (routesMap[key].interval) {
+              setInterval(() => {
+                ws.send(dataRes);
+              }, routesMap[key].interval);
+            } else {
+              ws.send(dataRes);
+            }
+            ws.on('message', (msg) => {
+              console.log(msg);
+              ws.send(msg);
+            });
+          }
         });
 
       } else {
@@ -95,38 +108,10 @@ program
         let fn = routesMap[key].renderFn ? (req, res) => {
           // 分页
           if (routesMap[key].paginationQueryConfig && routesMap[key].json) {
-            let config = routesMap[key].paginationQueryConfig;
-            let pIndex, pSize, pList, startIndex;
-
-            pIndex = config.pageIndex || 'pageIndex';
-            pSize = config.pageSize || 'pageSize';
-            pList = config.listName || 'listName';
-            startIndex = config.startIndex || 1;
-
-            let reg = /^[1-9]\d*|0$/;
-            let rightIndex;
-            let rightSize;
-
-            if (method === 'get') {
-              rightIndex = reg.test(parseInt(req.query[pIndex]));
-              rightSize = reg.test(parseInt(req.query[pSize]));
-            } else if (method === 'post') {
-              rightIndex = reg.test(parseInt(req.body[pIndex]));
-              rightSize = reg.test(parseInt(req.body[pSize]));
-            }
-
-            if ( rightIndex && rightSize && method === 'get') {
-              dataRes = getPageData(routesMap[key].json, req.query[pIndex], req.query[pSize], pList, startIndex);
-            } else if ( rightIndex && rightSize && method === 'post') {
-              dataRes = getPageData(routesMap[key].json, req.body[pIndex], req.body[pSize], pList, startIndex);
-            } else {
-              dataRes = fs.readFileSync(path.join(path.resolve('.'), routesMap[key].json));
-              dataRes = JSON.parse(dataRes)
-            }
+            dataRes = getCommResult(routesMap[key].paginationQueryConfig, routesMap[key].json, method, req, res);
           } else if (routesMap[key].json) {
             // 非分页
-            dataRes = fs.readFileSync(path.join(path.resolve('.'), routesMap[key].json));
-            dataRes = JSON.parse(dataRes)
+            dataRes = getJsonNoPage(routesMap[key].json);
           };
           if (routesMap[key].renderFn && routesMap[key].json) {
             routesMap[key].renderFn(dataRes, req, res, ext);
@@ -136,40 +121,11 @@ program
 
         } : (req, res) => {
            // 分页
-           if (routesMap[key].paginationQueryConfig && routesMap[key].json) {
-            let config = routesMap[key].paginationQueryConfig;
-            let pIndex, pSize, pList, startIndex;
-
-            pIndex = config.pageIndex || 'pageIndex';
-            pSize = config.pageSize || 'pageSize';
-            pList = config.listName || 'listName';
-            startIndex = config.startIndex || 1;
-
-            let reg = /^[1-9]\d*|0$/;
-            let rightIndex;
-            let rightSize;
-
-            if (method === 'get') {
-              rightIndex = reg.test(parseInt(req.query[pIndex]));
-              rightSize = reg.test(parseInt(req.query[pSize]));
-            } else if (method === 'post') {
-              rightIndex = reg.test(parseInt(req.body[pIndex]));
-              rightSize = reg.test(parseInt(req.body[pSize]));
-            }
-
-            if ( rightIndex && rightSize && method === 'get') {
-              dataRes = getPageData(routesMap[key].json, req.query[pIndex], req.query[pSize], pList, startIndex);
-            } else if ( rightIndex && rightSize && method === 'post') {
-              dataRes = getPageData(routesMap[key].json, req.body[pIndex], req.body[pSize], pList, startIndex);
-            } else {
-              dataRes = fs.readFileSync(path.join(path.resolve('.'), routesMap[key].json));
-              dataRes = JSON.parse(dataRes)
-            }
-
+          if (routesMap[key].paginationQueryConfig && routesMap[key].json) {
+            dataRes = getCommResult(routesMap[key].paginationQueryConfig, routesMap[key].json, method, req, res);
           } else if (routesMap[key].json) {
             // 非分页
-            dataRes = fs.readFileSync(path.join(path.resolve('.'), routesMap[key].json));
-            dataRes = JSON.parse(dataRes)
+            dataRes = getJsonNoPage(routesMap[key].json);
           };
           if (callbackStatus === 404) {
             let errorInfo = new Error('404 Not Found')
@@ -178,7 +134,6 @@ program
             res.status(callbackStatus).send(dataRes);
           }
         };
-
         router[method](route, fn);
       }
 
@@ -191,30 +146,78 @@ program
 
 program.parse(process.argv);
 
-function getPageData (url, p, s, listName, startP) {
+// 返回数据公共代码提取
+function getCommResult (pageConfig, json, getOrPost, req, res) {
+  let config = pageConfig;
+  let pIndex, pSize, pList, startIndex;
 
+  pIndex = config.pageIndex ? config.pageIndex : 'pageIndex';
+  pSize = config.pageSize ? config.pageSize : 'pageSize';
+  pList = config.listName ? config.listName : 'data';
+  startIndex = config.startIndex;
+
+  let reg = /^[1-9]\d*|0$/;
+  let rightIndex;
+  let rightSize;
+
+  if (getOrPost === 'get') {
+    rightIndex = reg.test(parseInt(req.query[pIndex]));
+    rightSize = reg.test(parseInt(req.query[pSize]));
+  } else if (getOrPost === 'post') {
+    rightIndex = reg.test(parseInt(req.body[pIndex]));
+    rightSize = reg.test(parseInt(req.body[pSize]));
+  }
+
+  if ( rightIndex && rightSize && getOrPost === 'get') {
+    dataRes = getPageData(json, req.query[pIndex], req.query[pSize], pList, startIndex);
+  } else if ( rightIndex && rightSize && getOrPost === 'post') {
+    dataRes = getPageData(json, req.body[pIndex], req.body[pSize], pList, startIndex);
+  } else {
+    dataRes = fs.readFileSync(path.join(path.resolve('.'), json));
+    dataRes = JSON.parse(dataRes)
+  }
+  return dataRes;
+}
+// 获取分页数据
+function getPageData (url, p, s, listName, startP) {
   var result = fs.readFileSync(path.join(path.resolve('.'), url));
   if (result) {
-    var list = result.toString();
-    list = JSON.parse(list);
-
+    result = result.toString();
+    var resJson = JSON.parse(result);
+    var list = resJson;
     let pageData = [];
     let keyName = listName || 'data';
-    if (keyName.split('.').length > 1) {
-      let arr = keyName.split('.');
+
+    let arr = keyName.split('.');
+    let temp = [];
+
+    if (arr.length > 0) {
       for (let k = 0; k < arr.length;  k++) {
-        list = list[arr[k]]
+        list = list[arr[k]];
       }
-    } else {
-      list = list[keyName];
     }
 
     if (startP === 0) {
-      pageData = list.slice(s * p, (p + 1) * s);
+      pageData = list.slice(p * s, (p + 1) * s);
     } else if (startP === 1) {
       pageData = list.slice(s * (p - 1), p * s);
     }
-    return pageData;
+
+    if (arr.length === 1) {
+      resJson[arr[0]] = pageData;
+    } else {
+      for (let k = 0; k < arr.length - 1;  k++) {
+        temp = resJson[arr[k]];
+      }
+      temp[arr.pop()] = pageData;
+    }
+    return resJson;
   }
+}
+// 获取json全部数据，不分页
+function getJsonNoPage (json) {
+  dataRes = fs.readFileSync(path.join(path.resolve('.'), json));
+  dataRes = JSON.parse(dataRes);
+  return dataRes;
 }
 

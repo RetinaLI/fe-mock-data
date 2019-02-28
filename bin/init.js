@@ -97,6 +97,12 @@ module.exports.fun = function () {
         // renderFn: function (req, res, ext) {
         //   res.status(200).sendFile(ext.path.join(ext.path.resolve(''), 'mock-data/json/identify.png'));
         // }
+      },
+      getWsData: {
+        url: 'ws://{{prefix}}/ws/hi',
+        method: 'ws',
+        interval: 3000,
+        json: 'mock-data/json/aaa.json'
       }
     }
   }`

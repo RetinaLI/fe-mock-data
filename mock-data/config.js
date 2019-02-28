@@ -21,7 +21,15 @@ module.exports = {
         // renderFn: function (dataRes, req, res, ext) {
         //   res.status(200).sendFile(ext.path.join(ext.path.resolve(''), 'mock-data/json/identify.png'));
         // }
+      },
+      getWsData: {
+        url: 'ws://{{prefix}}/ws/hi',
+        method: 'ws',
+        interval: 3000,
+        json: 'mock-data/json/aaa.json'
+        // renderFn: function(dataRes, ws, req, ext) {
+        //   console.log(dataRes);
+        // }
       }
     }
-
   }
