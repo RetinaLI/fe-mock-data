@@ -1,4 +1,5 @@
 ## 后台数据模拟（fe-mock-data)
+  [github地址](https://github.com/RetinaLI/fe-mock-data)
 ### 介绍
     fe-mock-data 是快速生成后台模拟数据的npm命令行工具
 ### 使用场景
@@ -87,7 +88,7 @@
   如需用到websocket,参考一下配置
 ```
   getWsData: {
-    url: 'ws://{{prefix}}/ws/hi', //配置websocket路径，只需更改'{{prefix}}'后面路径。前台写法是： 'ws://localhost:4200/ws/hi'.
+    url: '/ws/hi', //配置websocket路径，前台写法是： 'ws://localhost:4200/ws/hi'.
     method: 'ws',  // 此项表示是websocket模拟，必填
     interval: 3000,  // 后台返回数据间隔（毫秒值），如不配置值返回一次
     json: 'mock-data/json/aaa.json'

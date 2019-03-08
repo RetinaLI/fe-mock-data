@@ -7,17 +7,31 @@
   <title>Document</title>
 </head>
 <body>
+    <div id="sse">
+        <a href="javascript:WebSocketTest()">运行 WebSocket</a>
+     </div>
 
      <input type="text" id="text">
      <button onclick ="send()">发送消息</button>
-     <button onclick ="closeWebsocket()">关闭连接</button>
+     <button onclick ="guanbi()">关闭连接</button>
      <div id="message"></div>
   <script>
+    function setMessageInnerHTML(innerHTML) {
+        document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    }
+
+
 
     // function WebSocketTest() {
 
       // 首先判断是否 支持 WebSocket
-        ws = new WebSocket("ws://localhost:4200/ws/hi");
+        if('WebSocket' in window) {
+            ws = new WebSocket("ws://localhost:4200/ws/hi");
+        } else if('MozWebSocket' in window) {
+            ws = new MozWebSocket("ws://localhost:4200/ws/hi");
+        } else {
+            ws = new SockJS("ws://localhost:4200/ws/hi");
+        }
 
         // var ws = new Websocket("ws://localhost:4200/ws/hi");
         ws.onopen = function() {
@@ -36,17 +50,12 @@
         };
 
     // }
-
-    // window.onbeforeunload = function () {
-    //   closeWebSocket();
-    // }
-
-    function setMessageInnerHTML(innerHTML) {
-        document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    }
-
-    function closeWebSocket() {
-        ws.close();
+    function guanbi() {
+      console.log(ws);
+        ws.onclose();
+        // ws.onclose = function(){
+        //   setMessageInnerHTML("WebSocket连接关闭");
+        // };
     }
 
     function send() {
@@ -54,6 +63,11 @@
         console.log(message);
         ws.send(message);
     }
+
+    // window.onbeforeunload = function () {
+    //   closeWebSocket();
+    // }
+
 
   </script>
 
