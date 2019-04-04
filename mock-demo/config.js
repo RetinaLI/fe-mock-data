@@ -1,5 +1,6 @@
 module.exports = {
     publicPath: 'mock-data/public',
+    publicName: 'static',
     routes: {
       getHelloData: {
         url: '/hello',

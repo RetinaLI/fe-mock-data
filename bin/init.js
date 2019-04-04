@@ -3,14 +3,15 @@ let path = require('path');
 let fs = require('fs');
 
 module.exports.fun = function () {
+
   let basePath = path.resolve('.');
 
   function makep (dir) {
-    let paths = dir.split('/')
+    let paths = dir.split('/');
     let index = 1;
     function createDir (index) {
       if (index > paths.length) { return };
-      let newPath = paths.slice(0, index).join('/')
+      let newPath = paths.slice(0, index).join('/');
       try {
         fs.accessSync(newPath);
         createDir(index + 1);
@@ -25,18 +26,7 @@ module.exports.fun = function () {
     }
     createDir(index);
   };
-
-  function writeData () {
-    let urlA, urlHello, urlConfig;
-    urlA = path.join(basePath, '/mock-data/json/aaa.json');
-    urlHello = path.join(basePath, '/mock-data/json/hello.json');
-    urlConfig = path.join(basePath, '/mock-data/config.js');
-
-    copy('./mock-demo/json/aaa.json', urlA);
-    copy('./mock-demo/json/hello.json', urlHello);
-    copy('./mock-demo/config.js', urlConfig);
-  };
-
+   // nodeV8.5以上新增fs.copyFile 本项目暂未使用
   function copy(src, dest) {
     let data;
     try{
@@ -51,19 +41,27 @@ module.exports.fun = function () {
       throw err;
     }
   };
+  function writeData () {
+    let urlA, urlHello, urlConfig;
+    urlA = path.join(basePath, '/mock-data/json/aaa.json');
+    urlHello = path.join(basePath, '/mock-data/json/hello.json');
+    urlConfig = path.join(basePath, '/mock-data/config.js');
 
-  makep('mock-data/json');
-
-  try {
-    fs.accessSync('mock-data/json');
-    start();
-  } catch(err) {
-    throw err;
-  }
+    copy('./mock-demo/json/aaa.json', urlA);
+    copy('./mock-demo/json/hello.json', urlHello);
+    copy('./mock-demo/config.js', urlConfig);
+  };
 
   function start() {
     writeData();
     console.log('文件初始配置成功');
   }
 
+  makep('mock-data/json');
+  try {
+    fs.accessSync('mock-data/json');
+    start();
+  } catch(err) {
+    throw err;
+  }
 }
