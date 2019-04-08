@@ -1,9 +1,4 @@
 #!/usr/bin/env node
-let express = require('express');
-let path = require('path');
-let fs = require('fs');
-let bodyParser = require('body-parser');
-
 let init = require('./bin/init.js');
 let runMock = require('./bin/run');
 let program = runMock.program;
