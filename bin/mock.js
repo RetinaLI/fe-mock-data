@@ -2,7 +2,7 @@
 let path = require('path');
 let fs = require('fs');
 
-module.exports.fun = function () {
+module.exports.init = function () {
 
   let basePath = path.resolve('.');
 
@@ -53,15 +53,15 @@ module.exports.fun = function () {
   };
 
   function start() {
+    makep('mock-data/json');
+    fs.accessSync('mock-data/json');
     writeData();
     console.log('文件初始配置成功');
   }
 
-  makep('mock-data/json');
   try {
-    fs.accessSync('mock-data/json');
     start();
   } catch(err) {
     throw err;
   }
-}
+};

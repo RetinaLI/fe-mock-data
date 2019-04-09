@@ -1,21 +1,35 @@
 #!/usr/bin/env node
-let init = require('./bin/init.js');
-let runMock = require('./bin/run');
-let program = runMock.program;
+if (process.argv.length > 1) {
+  let config = require('./config');
+  let program = require('commander');
+  let packageInfo = require('./package.json');
 
-program
-  .command('init')
-  .description('初始化mock-server文件夹')
-  .action(function() {
-    init.fun();
-  })
+  program
+  .version(packageInfo.version)
+  .option('-p, --path [path]', '配置文件路径', config.config)
+  .option('-P, --port [port]', '配置端口号', config.port);
 
-program
-  .command('run')
-  .description('运行模拟后台数据')
-  .action(function() {
-    runMock.run();
-  })
+  program
+    .command('init')
+    .description('初始化mock-server文件夹')
+    .action(function() {
+      let mock = require('./bin/mock.js');
+      mock.init();
+    });
 
-program.parse(process.argv);
+  program
+    .command('run')
+    .description('运行模拟后台数据')
+    .action(function() {
+      let server = require('./lib/server');
+      server.start({
+        port: program.port || config.port,
+        path: program.path || config.config,
+        app: null
+      });
+    });
 
+  program.parse(process.argv);
+} else {
+  module.exports = require('./lib/main');
+}
