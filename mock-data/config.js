@@ -41,7 +41,7 @@ module.exports = {
          * MOCK_LIB.getPageData: function (list: any[], pageIndex: number, pageSize: number, startIndex: number) return list: any[];
          */
         const MOCK_LIB = require('fe-mock-data');
-        dataRes.data.list = MOCK_LIB.getPageData(dataRes.data.list, req.body.pageIndex, req.body.pageSize, 0);
+        dataRes.data.list = MOCK_LIB.getPageData(dataRes.data.list, req.body.pageIndex, req.body.pageSize, 1);
         res.status(200).send(dataRes);
       }
     },
@@ -76,14 +76,14 @@ module.exports = {
       interval: 3000,  // 默认5000ms
       json: 'mock-data/json/data.json'
     },
-    // websocket，总定义返回
-    // getWsDataByRenderFn: {
-    //   url: '/ws/data/custom-render',
-    //   method: 'ws',
-    //   json: 'mock-data/json/data.json',
-    //   renderFn: function(dataRes, ws, req, ext) {
-    //     console.log(dataRes);
-    //   }
-    // }
+    // websocket，自定义返回
+    getWsDataByRenderFn: {
+      url: '/ws/data/custom-render',
+      method: 'ws',
+      json: 'mock-data/json/data.json',
+      renderFn: function(dataRes, ws, req, ext) {
+        ws.send(JSON.stringify(dataRes));
+      }
+    }
   }
 };

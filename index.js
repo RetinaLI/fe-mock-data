@@ -30,6 +30,5 @@ if (process.argv.length > 1) {
     });
 
   program.parse(process.argv);
-} else {
-  module.exports = require('./lib/main');
 }
+module.exports = require('./lib/main');

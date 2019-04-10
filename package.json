@@ -1,6 +1,6 @@
 {
   "name": "fe-mock-data",
-  "version": "2.0.0",
+  "version": "2.0.5",
   "description": "模拟后台数据",
   "main": "index.js",
   "scripts": {},
