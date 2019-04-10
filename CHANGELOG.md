@@ -86,4 +86,11 @@
    * **paginationQueryConfig.pageSize**调整为**paginationQueryConfig.pageSizeKey**
    * **paginationQueryConfig.listName**调整为**paginationQueryConfig.listKey**
 
-2. **remove:** **ext**不再提供**getPageData**方法
+2. **remove:** **ext**不再提供**getPageData**方法，使用如下方式替换：
+   ```
+      renderFn: (data, req, res, ext) {
+        const MOCK_LIB = require('fe-mock-data');
+        data.list = MOCK_LIB.getPageData(data.list, req.body.pageIndex, req.body.pageSize, 1);
+        res.status(200).send(dataRes);
+      }
+   ```
