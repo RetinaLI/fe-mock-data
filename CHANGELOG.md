@@ -52,6 +52,29 @@
 
 4. **update:** 命令行提示信息优化，提升健壮性
 
+4. **update:** 规范了websocket自定义的写法，并添加到示例中
+
+   ```
+
+      // websocket，自定义返回，
+      // 注意：一旦提供了renderFn，那么插件不会启动后台轮询，需要自行启动，比如setInterval
+      getWsDataByRenderFn: {
+         url: '/ws/data/custom-render',
+         method: 'ws',
+         json: 'mock-data/json/data.json',
+         renderFn: function(dataRes, ws, req, ext) {
+            clearInterval(intervalId);
+            setInterval(() => {
+               if (ws.readyState === 1) {
+                  ws.send(JSON.stringify(dataRes));
+               } else {
+                  clearInterval(intervalId);
+               }
+            }, 3000);
+         }
+      }
+   ```
+
 ## BREAKING CHANGES
 
 1. **update:** 配置调整：
