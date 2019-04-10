@@ -83,7 +83,7 @@
 
    * **callbackStatus**调整为**statusCode**
    * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageIndexKey**
-   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageSizeKey**
-   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.listKey**
+   * **paginationQueryConfig.pageSize**调整为**paginationQueryConfig.pageSizeKey**
+   * **paginationQueryConfig.listName**调整为**paginationQueryConfig.listKey**
 
 2. **remove:** **ext**不再提供**getPageData**方法
