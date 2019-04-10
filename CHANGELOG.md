@@ -35,16 +35,18 @@
    		mock.getPageData(arr, pageIndex, pageSize, startPageIndex)
 
    		// 可以自定义启动服务，可以使用该方法和webpack-dev-server集成
-  		mock.start({
-  			app: app,  // express app
-  			port: 4200,
-  			path: 'mock-data/config.js'
-  		});
+         mock.start({
+            app: app,  // express app
+            port: 4200,
+            path: 'mock-data/config.js'
+         });
 
    		//config文件中的某一项配置，会验证合法性、补足默认项
    		mock.parseRouteConfig(routeConfig);
 
-   		// routeConfig：config文件中的某一项配置；req 需要一个{ body?:{}, query?:{} }类似的结构，可以用来模拟传递的请求参数  		mock.getResponseData(routeConfig, req /* express request */);
+   		// routeConfig：config文件中的某一项配置；
+         // req 需要一个{ body?:{}, query?:{} }类似的结构，可以用来模拟传递的请求参数
+         mock.getResponseData(routeConfig, req /* express request */);
 
    ```
 
