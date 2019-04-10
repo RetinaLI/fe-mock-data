@@ -86,7 +86,7 @@ module.exports = {
       json: 'mock-data/json/data.json',
       renderFn: function(dataRes, ws, req, ext) {
         clearInterval(intervalId);
-        setInterval(() => {
+        intervalId = setInterval(() => {
           if (ws.readyState === 1) {
             ws.send(JSON.stringify(dataRes));
           } else {
