@@ -1,3 +1,5 @@
+let intervalId = null;
+
 module.exports = {
   // publicPath + publicName 配置静态目录，参考express.static
   // app.use(publicName, express.static(publicPath));
@@ -76,15 +78,21 @@ module.exports = {
       interval: 3000,  // 默认5000ms
       json: 'mock-data/json/data.json'
     },
-    // websocket，自定义返回
+    // websocket，自定义返回，
+    // 注意：一旦提供了renderFn，那么插件不会启动后台轮询，需要自行启动，比如setInterval
     getWsDataByRenderFn: {
       url: '/ws/data/custom-render',
       method: 'ws',
       json: 'mock-data/json/data.json',
       renderFn: function(dataRes, ws, req, ext) {
-        if (ws.readyState === 1) {
-          ws.send(JSON.stringify(dataRes));
-        }
+        clearInterval(intervalId);
+        setInterval(() => {
+          if (ws.readyState === 1) {
+            ws.send(JSON.stringify(dataRes));
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 3000);
       }
     }
   }

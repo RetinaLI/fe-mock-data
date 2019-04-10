@@ -60,6 +60,29 @@
      ]
      ```
      两个配置项必须同时出现或者同时不出现。
+  3. **特别注意：** 当使用websocket的renderFn进行自定义时，必须加上判断：ws.readyState === 1，如果有定时任务，也需要注意清除定时任务，比如：
+
+    ```
+      let intervalId = null;
+
+      // websocket，自定义返回
+      getWsDataByRenderFn: {
+        url: '/ws/data/custom-render',
+        method: 'ws',
+        json: 'mock-data/json/data.json',
+        renderFn: function(dataRes, ws, req, ext) {
+          clearInterval(intervalId);
+          intervalId = setInterval(() => {
+            if (ws.readyState === 1) {
+              ws.send(JSON.stringify(dataRes));
+            } else {
+              clearInterval(intervalId);
+            }
+          }, 4000);
+        }
+      }
+
+    ```
 
 ## 更多命令
     fe-mock-data -h

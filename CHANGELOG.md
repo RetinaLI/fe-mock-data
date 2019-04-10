@@ -3,7 +3,7 @@
 1. 修改配置文件时，可以自动监听并重启服务
 2. <s>根据配置文件自动生成模拟数据（取消实现）</s>
 
-# 2.0.6
+# 2.0.9
 
 1. **add:** 可以与webpack的webpack-dev-server插件集成，集成方式：
 
@@ -26,17 +26,7 @@
        }
   ```
 
-
-2. **update:** 配置调整：
-
-   * **callbackStatus**调整为**statusCode**
-   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageIndexKey**
-   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageSizeKey**
-   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.listKey**
-   
-3. **remove:** **ext**不再提供**getPageData**方法
-
-4. **add:** 扩充引用**fe-mock-data**时的提供的方法
+2. **add:** 扩充引用**fe-mock-data**时的提供的方法
 
    ```
    		const mock = require('fe-mock-data');
@@ -58,6 +48,17 @@
 
    ```
 
-5. **add:** 添加单元测试，进入**test**目录，执行**node test.js**
+3. **add:** 添加单元测试，进入**test**目录，执行**node test.js**
 
-6. **update:** 命令行提示信息优化
+4. **update:** 命令行提示信息优化，提升健壮性
+
+## BREAKING CHANGES
+
+1. **update:** 配置调整：
+
+   * **callbackStatus**调整为**statusCode**
+   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageIndexKey**
+   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.pageSizeKey**
+   * **paginationQueryConfig.pageIndex**调整为**paginationQueryConfig.listKey**
+
+2. **remove:** **ext**不再提供**getPageData**方法
