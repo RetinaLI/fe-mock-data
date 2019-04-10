@@ -82,7 +82,9 @@ module.exports = {
       method: 'ws',
       json: 'mock-data/json/data.json',
       renderFn: function(dataRes, ws, req, ext) {
-        ws.send(JSON.stringify(dataRes));
+        if (ws.readyState === 1) {
+          ws.send(JSON.stringify(dataRes));
+        }
       }
     }
   }
