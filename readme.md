@@ -42,7 +42,7 @@
    [进入](https://github.com/RetinaLI/fe-mock-data/blob/master/mock-data/config.js)
 
 ## 注意事项
-  1. config.js中使用了 `module.exports` 导出模块，引用该文件时推荐使用
+  1. config.js中使用了es6`export default {}` 或 `module.exports` 导出模块，引用该文件时推荐使用
 
   	```
   	import * as xxx from '../mock-data/config.js';
