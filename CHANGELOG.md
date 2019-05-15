@@ -3,6 +3,10 @@
 1. 修改配置文件时，可以自动监听并重启服务
 2. <s>根据配置文件自动生成模拟数据（取消实现）</s>
 
+# 2.0.10
+
+1. fix mock-data/config.js 一个示例bug
+
 # 2.0.9
 
 1. **add:** 可以与webpack的webpack-dev-server插件集成，集成方式：
