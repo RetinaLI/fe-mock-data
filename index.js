@@ -8,6 +8,7 @@ if (process.argv.length > 1) {
   .version(packageInfo.version)
   .option('-p, --path [path]', '配置文件路径', config.config)
   .option('-P, --port [port]', '配置端口号', config.port);
+  .option('-W, --watch', '监听config修改并热启动，默认不启动');
 
   program
     .command('init')
@@ -25,6 +26,7 @@ if (process.argv.length > 1) {
       server.start({
         port: program.port || config.port,
         path: program.path || config.config,
+        enableWatch: program.watch,
         app: null
       });
     });
