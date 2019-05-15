@@ -33,10 +33,11 @@
 
 ### 完整启动
 
-	fe-mock-data run --path  mock-data/config.js --port 4200
+	fe-mock-data run --path  mock-data/config.js --port 4200  [--watch]
 
 * `path`：路由配置文件，默认 mock-data/config.js
 * `port`：端口，默认 4200
+* `watch`：监听config修改并热启动，默认不启动
 
 ## 配置文件 config.js 的语法
    [进入](https://github.com/RetinaLI/fe-mock-data/blob/master/mock-data/config.js)
