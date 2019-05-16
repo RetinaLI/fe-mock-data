@@ -54,6 +54,7 @@
     ```
       import xxx from '../mock-data/config.js';
     ```
+    
     + 防止报错方法：比如修改`.babelrc`文件：
 
      ```
