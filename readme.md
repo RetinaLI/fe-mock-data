@@ -44,11 +44,13 @@
 
 ## 注意事项： 配置文件 config.js,在webpack + babel(vue/react/angular)项目中，其他模块引用方式
   1. 如果使用`export default {}`方式导出模块，引入方式;
+  
     ```
     import xxx from '../mock-data/config.js';
     ```
 
   2. 如果使用`module.exports`方式导出模块，引用方式[可能会报错：export与module.exports不能混用];
+  
     ```
       import xxx from '../mock-data/config.js';
     ```
