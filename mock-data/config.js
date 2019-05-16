@@ -1,6 +1,6 @@
 let intervalId = null;
 
-module.exports = {
+export default {
   // publicPath + publicName 配置静态目录，参考express.static
   // app.use(publicName, express.static(publicPath));
   publicPath: 'mock-data/public',

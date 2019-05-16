@@ -42,22 +42,23 @@
 ## 配置文件 config.js 的语法
    [进入](https://github.com/RetinaLI/fe-mock-data/blob/master/mock-data/config.js)
 
-## 注意事项
-  1. config.js中使用了es6`export default {}` 或 `module.exports` 导出模块，引用该文件时推荐使用
+## 注意事项： 配置文件 config.js,在webpack + babel(vue/react/angular)项目中，其他模块引用方式
+  1. 如果使用`export default {}`方式导出模块，引入方式;
+    ```
+    import xxx from '../mock-data/config.js';
+    ```
 
-  	```
-  	import * as xxx from '../mock-data/config.js';
-  	```
-
-  2. 如果不方便使用`import`方式引用，那么在`vue+webpack`项目中（vue2.*版本）打包时，可能会报错。需要修改`babel`配置项`plugins`
-
-     比如修改`.babelrc`文件：
+  2. 如果使用`module.exports`方式导出模块，引用方式[可能会报错：export与module.exports不能混用];
+    ```
+      import xxx from '../mock-data/config.js';
+    ```
+    + 防止报错方法：比如修改`.babelrc`文件：
 
      ```
      plugins: [
-     	...,
-     	"transform-runtime",
-     	"transform-es2015-modules-commonjs"
+      ...,
+      "transform-runtime",
+      "transform-es2015-modules-commonjs"
      ]
      ```
      两个配置项必须同时出现或者同时不出现。

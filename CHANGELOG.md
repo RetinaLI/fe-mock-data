@@ -12,6 +12,10 @@
 
   **注意：** 当使用`require('fe-mock-data').start({app: app})` 方式启动时，不会启动热启动。
 
+# 2.0.11
+
+1. 新增对es6导入方式import编译: 支持两种导入方式 export default {} 或者 module.exports方式;
+
 # 2.0.10
 
 1. fix mock-data/config.js 一个示例bug
