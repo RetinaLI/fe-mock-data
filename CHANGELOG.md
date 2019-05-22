@@ -1,5 +1,10 @@
 # feature
 
+暂无
+
+# 2.0.15
+   支持routes中json配置项直接写json格式数据
+
 # 2.0.14
    es6导入方式bug修复
 

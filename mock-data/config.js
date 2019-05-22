@@ -13,7 +13,11 @@ export default {
       url: '/data', // 默认 /
       method: 'get', // 默认 get
       statusCode: 200, // 默认 200
-      json: 'mock-data/json/data.json'
+      json: {
+        "data": {
+          "name": "jakson"
+        }
+      }
     },
     // 返回404状态码
     getSingleDataWith404: {
